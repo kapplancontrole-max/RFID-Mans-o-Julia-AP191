@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrador - AbrangeBox</title>
+    <style>
+        :root { 
+            --bg: #f8f9fa; 
+            --card: #ffffff; 
+            --primary: #0056b3;
+            --primary-hover: #004085;
+            --success: #28a745;
+            --success-hover: #218838;
+            --text: #1a202c; 
+            --text-secondary: #64748b;
+            --danger: #dc3545; 
+            --danger-hover: #c82333;
+            --accent: #0056b3; 
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Inter', 'Roboto', sans-serif;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            padding: clamp(12px, 3vw, 40px); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            color: var(--text); 
+            line-height: 1.5;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            display: none; 
+            position: relative; 
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            gap: 15px;
+        }
+
+        .panel-logo {
+                max-width: 280px;
+                width: 100%;
+                max-height: none;
+                height: auto;
+                margin: 0 auto;
+            
+        }
+
+        h1 {
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+
+        .card { 
+            background: var(--card); 
+            padding: clamp(16px, 3vw, 25px); 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.04); 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border); 
+        }
+
+        .card h3 { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+            font-weight: 700;
+        }
+
+        .card p { 
+            font-size: clamp(22px, 5vw, 28px); 
+            font-weight: 800; 
+            color: var(--text); 
+        }
+
+        .btn { 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px; 
+            background: var(--primary); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            font-size: 14px;
+            border: none; 
+            cursor: pointer; 
+            transition: background 0.2s, transform 0.1s; 
+            box-shadow: 0 4px 6px rgba(0, 86, 179, 0.15);
+            min-height: 44px;
+            width: auto;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-accent { 
+            background: var(--success); 
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.15);
+        }
+
+        .btn-pdf {
+            background: #6c757d;
+            box-shadow: 0 4px 6px rgba(108, 117, 125, 0.15);
+        }
+
+        .btn-logout { 
+            background-color: var(--danger); 
+            box-shadow: 0 4px 6px rgba(220, 53, 69, 0.15);
+        }
+
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* TABELAS PARA DESKTOP */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 1px solid var(--border);
+        }
+
+        th, td { 
+            padding: 12px 16px; 
+            border-bottom: 1px solid var(--border); 
+            text-align: left; 
+            font-size: 14px;
+        }
+
+        th { 
+            background-color: #f8fafc; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .txt-sucesso { 
+            color: var(--success); 
+            font-weight: 700; 
+            margin-top: 15px; 
+            font-size: 14px; 
+            background-color: #f0fff4;
+            border: 1px solid #c6f6d5;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .login-box { 
+            background: white; 
+            padding: clamp(25px, 5vw, 40px) clamp(20px, 4vw, 35px); 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0, 86, 179, 0.08); 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid var(--border); 
+            text-align: center; 
+            margin: 4vh auto 0; 
+        }
+
+        .login-box h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .login-box input { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+            font-size: 16px; /* Evita zoom automático no iOS */
+            background-color: #f8fafc; 
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .login-box label { 
+            font-weight: 700; 
+            display: block; 
+            text-align: left; 
+            color: var(--text); 
+            font-size: 12px; 
+            text-transform: uppercase;
+        }
+
+        /* OTIMIZAÇÃO MÓVEL VIA MEDIA QUERIES */
+        @media (max-width: 640px) {
+            .panel-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .panel-logo {
+                max-height: 80px;
+                margin: 0 auto;
+            }
+
+            .action-group .btn, 
+            .btn-logout {
+                width: 100%;
+            }
+
+            /* Transformação de Tabela em Cards */
+            .responsive-table, 
+            .responsive-table tbody, 
+            .responsive-table tr, 
+            .responsive-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .responsive-table thead {
+                display: none; /* Oculta o cabeçalho original da tabela */
+            }
+
+            .responsive-table tr {
+                margin-bottom: 12px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                background-color: #ffffff;
+                padding: 10px 14px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            }
+
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px dashed var(--border);
+                font-size: 13px;
+                text-align: right;
+            }
+
+            .responsive-table td:last-child {
+                border-bottom: none;
+            }
+
+            /* Insere o nome da coluna via atributo data-label */
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                font-size: 11px;
+                text-align: left;
+                padding-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-box" id="caixa-login">
+    <div style="margin-bottom: 20px;">
+        <img src="logo.png" alt="Logo" style="max-width: 280px; height: auto; object-fit: contain;">
+    </div>
+    <h3>Painel de Controle</h3>
+    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Acesso restrito ao administrador</p>
+    <form onsubmit="autenticarAdmin(event)">
+        <label for="senha-admin">Código de Acesso:</label>
+        <input type="password" id="senha-admin" placeholder="Digite o código" required>
+        <div id="erro-login" style="color: var(--danger); font-size: 13px; margin-bottom: 15px; display: none; font-weight: 700;"></div>
+        <button type="submit" class="btn" id="btn-entrar" style="width: 100%;">Entrar no Sistema</button>
+    </form>
+</div>
+
+<div class="container" id="conteudo-dashboard">
+    <div class="panel-header">
+        <img src="logo.png" alt="Logo AbrangeBox" class="panel-logo">
+        <button class="btn btn-logout" onclick="efetuarLogout()">Sair do Painel</button>
+    </div>
+    
+    <h1>Dashboard AP111B <span style="color: var(--text-secondary); font-weight: 400; display: block; font-size: 0.6em;">Consumo Geral</span></h1>
+    
+    <div class="stats-grid">
+        <div class="card" style="border-top: 4px solid var(--primary);">
+            <h3>Consumo Geral Acumulado</h3>
+            <p id="total-geral">Buscando...</p>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--success);">
+            <h3>Total de Leituras Gravadas</h3>
+            <p id="total-registros">0</p>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 5px solid var(--success);">
+        <h3>Fechamento de Competência / Relatório Mensal (30 Dias)</h3>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 5px; margin-bottom: 15px;">
+            Clique no botão abaixo para consolidar o consumo total dos últimos 30 dias agrupado por Cartão RFID.
+        </p>
+        
+        <div class="action-group">
+            <button class="btn btn-accent" id="btn-fechamento" onclick="processarFechamentoMensal()">Realizar Fechamento Mensal</button>
+            <button class="btn btn-pdf" id="btn-gerar-pdf" onclick="gerarPDFRelatorio()" style="display: none;">📄 Baixar PDF</button>
+        </div>
+
+        <div id="msg-fechamento" class="txt-sucesso" style="display: none;"></div>
+        
+        <table id="tabela-fechamento" class="responsive-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Cartão RFID</th>
+                    <th>Consumo Últimos 30 Dias</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-fechamento"></tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Histórico de Leituras Globais (Tempo Real)</h3>
+        <table id="tabela-geral" class="responsive-table">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Vaga</th>
+                    <th>Cartão RFID</th>
+                    <th>Consumo Sessão</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+        <div style="margin-top: 20px;">
+            <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTanQzIbpJxN7rZUnmz-3bT9V8dXK6IbXEjF3LvL9vNPd_dEGCLwjXwDeVsr0ySKfkZ2IZbcGzUPFXY/pub?gid=0&single=true&output=csv" target="_blank" class="btn" style="background-color: var(--text-secondary); box-shadow: none; width: 100%;">Abrir Planilha Original ↗</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const URL_GAS = 'https://script.google.com/macros/s/AKfycbzqAFE2oFEOrq6eYljLi7qdUNrLDeaoMUTGMNr5c3EQ11j5IYy_m3uGOkIs15QPFQmRbg/exec';
+    let ultimosDadosFechamento = [];
+
+    window.onload = function() {
+        if (sessionStorage.getItem('adminLogado') === 'true') {
+            exibirDashboard();
+        }
+    };
+
+    async function autenticarAdmin(event) {
+        event.preventDefault();
+        const senha = document.getElementById('senha-admin').value;
+        const erro = document.getElementById('erro-login');
+        const btn = document.getElementById('btn-entrar');
+
+        erro.style.display = 'none';
+        btn.innerText = 'Verificando...';
+        btn.disabled = true;
+
+        try {
+            const resposta = await fetch(URL_GAS, {
+                method: 'POST',
+                body: JSON.stringify({ vaga: "ADMIN", senha: senha, acao: "verificar_login" })
+            });
+            const resultado = await resposta.json();
+
+            if (resultado.status === "sucesso") {
+                sessionStorage.setItem('adminLogado', 'true');
+                sessionStorage.setItem('adminSenha', senha);
+                exibirDashboard();
+            } else {
+                erro.innerText = resultado.mensagem || "Senha Master incorreta!";
+                erro.style.display = 'block';
+                btn.innerText = 'Entrar no Sistema';
+                btn.disabled = false;
+            }
+        } catch (e) {
+            console.error(e);
+            erro.innerText = "Erro ao conectar ao servidor.";
+            erro.style.display = 'block';
+            btn.innerText = 'Entrar no Sistema';
+            btn.disabled = false;
+        }
+    }
+
+    function exibirDashboard() {
+        document.getElementById('caixa-login').style.display = 'none';
+        document.getElementById('conteudo-dashboard').style.display = 'block';
+        carregarDadosGlobais();
+    }
+
+    async function carregarDadosGlobais() {
+        const senha = sessionStorage.getItem('adminSenha');
+        try {
+            const resposta = await fetch(URL_GAS, {
+                method: 'POST',
+                body: JSON.stringify({ vaga: "ADMIN", senha: senha, acao: "buscar_todos_os_dados" })
+            });
+            const resultado = await resposta.json();
+
+            if (resultado.status === "sucesso") {
+                renderizarPainelSindico(resultado.dados);
+            }
+        } catch (error) {
+            console.error(error);
+            document.getElementById('corpo-tabela').innerHTML = "<tr><td colspan='4' style='color: var(--danger); text-align: center;'>Erro ao atualizar tabela.</td></tr>";
+        }
+    }
+
+    function renderizarPainelSindico(dados) {
+        const corpo = document.getElementById('corpo-tabela');
+        corpo.innerHTML = "";
+        document.getElementById('total-registros').innerText = dados.length;
+
+        if (dados.length === 0) {
+            document.getElementById('total-geral').innerText = "0.000 kWh";
+            corpo.innerHTML = "<tr><td colspan='4' style='text-align: center;'>Nenhum dado encontrado.</td></tr>";
+            return;
+        }
+
+        let somaTotalGeral = 0;
+        const dadosInvertidos = [...dados].reverse();
+
+        dadosInvertidos.forEach(item => {
+            somaTotalGeral += item.consumo;
+            corpo.innerHTML += `<tr>
+                <td data-label="Data/Hora">${new Date(item.data).toLocaleString('pt-BR')}</td>
+                <td data-label="Vaga"><strong>${item.vaga.toUpperCase()}</strong></td>
+                <td data-label="Cartão RFID"><strong>${item.cartao}</strong></td>
+                <td data-label="Consumo">${item.consumo.toFixed(3)} kWh</td>
+            </tr>`;
+        });
+
+        document.getElementById('total-geral').innerText = somaTotalGeral.toFixed(3) + " kWh";
+    }
+
+    async function processarFechamentoMensal() {
+        const btn = document.getElementById('btn-fechamento');
+        const btnPdf = document.getElementById('btn-gerar-pdf');
+        const msg = document.getElementById('msg-fechamento');
+        const tabela = document.getElementById('tabela-fechamento');
+        const corpoFechamento = document.getElementById('corpo-fechamento');
+        const senha = sessionStorage.getItem('adminSenha');
+
+        if (!confirm("Deseja consolidar o consumo dos últimos 30 dias para cada cartão RFID?")) {
+            return;
+        }
+
+        btn.innerText = "Calculando...";
+        btn.disabled = true;
+        msg.style.display = "none";
+        btnPdf.style.display = "none";
+
+        try {
+            const resposta = await fetch(URL_GAS, {
+                method: 'POST',
+                body: JSON.stringify({ vaga: "ADMIN", senha: senha, acao: "buscar_todos_os_dados" })
+            });
+            const resultado = await resposta.json();
+
+            if (resultado.status === "sucesso") {
+                const limite30Dias = new Date();
+                limite30Dias.setDate(limite30Dias.getDate() - 30);
+
+                const consumoPorCartao = {};
+
+                resultado.dados.forEach(item => {
+                    const dataLeitura = new Date(item.data);
+                    const cartao = String(item.cartao || "N/A").toUpperCase().trim();
+
+                    if (dataLeitura >= limite30Dias && cartao !== "" && cartao !== "N/A") {
+                        if (!consumoPorCartao[cartao]) {
+                            consumoPorCartao[cartao] = 0;
+                        }
+                        consumoPorCartao[cartao] += parseFloat(item.consumo) || 0;
+                    }
+                });
+
+                corpoFechamento.innerHTML = "";
+                ultimosDadosFechamento = [];
+
+                for (let cartao in consumoPorCartao) {
+                    const totalConsumido = consumoPorCartao[cartao];
+                    ultimosDadosFechamento.push({ cartao, totalConsumido });
+
+                    corpoFechamento.innerHTML += `<tr>
+                        <td data-label="Cartão RFID"><strong>${cartao}</strong></td>
+                        <td data-label="Consumo (30 dias)" style="color: var(--success); font-weight: bold;">${totalConsumido.toFixed(3)} kWh</td>
+                    </tr>`;
+                }
+
+                if (ultimosDadosFechamento.length === 0) {
+                    corpoFechamento.innerHTML = "<tr><td colspan='2' style='text-align: center;'>Nenhum registro encontrado nos últimos 30 dias.</td></tr>";
+                }
+
+                msg.innerText = "✓ Relatório de 30 dias gerado com sucesso!";
+                msg.style.display = "block";
+                tabela.style.display = "table";
+                btnPdf.style.display = "inline-flex";
+            } else {
+                alert("Erro: " + resultado.mensagem);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro de comunicação com o servidor.");
+        } finally {
+            btn.innerText = "Realizar Fechamento Mensal";
+            btn.disabled = false;
+        }
+    }
+
+    function gerarPDFRelatorio() {
+        if (ultimosDadosFechamento.length === 0) {
+            alert("Não há dados de fechamento para gerar PDF.");
+            return;
+        }
+
+        const dataHoje = new Date().toLocaleDateString('pt-BR');
+        let linhasTabela = "";
+
+        ultimosDadosFechamento.forEach(item => {
+            linhasTabela += `
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>${item.cartao}</strong></td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #28a745; font-weight: bold;">${item.totalConsumido.toFixed(3)} kWh</td>
+                </tr>`;
+        });
+
+        const janelaImpressao = window.open('', '_blank', 'width=800,height=600');
+        janelaImpressao.document.write(`
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <title>Relatório de Fechamento Mensal - AbrangeBox</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+                    .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
+                    h2 { color: #0056b3; margin-bottom: 5px; font-size: 18px; }
+                    p { font-size: 13px; color: #666; margin: 0; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                    th { background-color: #f8fafc; text-align: left; padding: 8px; border-bottom: 2px solid #ddd; font-size: 12px; }
+                    .footer { margin-top: 30px; font-size: 11px; text-align: center; color: #888; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>AbrangeBox - Relatório de Fechamento</h2>
+                    <p>Consumo Agrupado por RFID (Últimos 30 Dias)</p>
+                    <p><strong>Data de Emissão:</strong> ${dataHoje}</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cartão RFID</th>
+                            <th>Consumo Consolidado (kWh)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${linhasTabela}
+                    </tbody>
+                </table>
+
+                <div class="footer">
+                    <p>Relatório gerado automaticamente pelo Sistema de Controle AbrangeBox.</p>
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() { window.close(); };
+                    };
+                <\/script>
+            </body>
+            </html>
+        `);
+        janelaImpressao.document.close();
+    }
+
+    function efetuarLogout() {
+        sessionStorage.clear();
+        window.location.reload();
+    }
+</script>
+</body>
+</html>
